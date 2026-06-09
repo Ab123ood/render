@@ -1,0 +1,97 @@
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.navbar-brand {
+    font-size: 1.25rem;
+}
+
+.flash-messages {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    left: 20px;
+    z-index: 1050;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.flash-messages .alert {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+}
+
+@media (max-width: 576px) {
+    .flash-messages {
+        right: 10px;
+        left: 10px;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+}
+
+.form-text {
+    font-size: 0.8125rem;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.alert-dismissible .btn-close {
+    padding: 0.75rem;
+}

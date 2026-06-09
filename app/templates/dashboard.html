@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم - نظام تسجيل دخول آمن{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-speedometer2 me-2"></i>لوحة التحكم</h2>
+            <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-primary">
+                <i class="bi bi-person me-1"></i>الملف الشخصي
+            </a>
+        </div>
+        
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <i class="bi bi-person-check text-primary" style="font-size: 2.5rem;"></i>
+                    <h5 class="mt-3">مستخدم نشط</h5>
+                    <p class="display-6 fw-bold text-primary">{{ user.username }}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <i class="bi bi-lock text-success" style="font-size: 2.5rem;"></i>
+                    <h5 class="mt-3">التشفير</h5>
+                    <p class="fw-bold text-success">Argon2id</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <i class="bi bi-database text-info" style="font-size: 2.5rem;"></i>
+                    <h5 class="mt-3">قاعدة البيانات</h5>
+                    <p class="fw-bold text-info">SQLite</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100 text-center p-4">
+                    <i class="bi bi-shield-check text-warning" style="font-size: 2.5rem;"></i>
+                    <h5 class="mt-3">الحماية</h5>
+                    <p class="fw-bold text-warning">متعددة الطبقات</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>حول هذا المشروع</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">هذا النظام يوضح أفضل الممارسات في أمن تطبيقات الويب:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>تشفير كلمات المرور بـ Argon2id</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>حماية CSRF مع Flask-WTF</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Rate Limiting لمنع Brute Force</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>قفل الحساب بعد 5 محاولات فاشلة</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>جلسات آمنة (HttpOnly, SameSite)</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>حماية من SQL Injection عبر ORM</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

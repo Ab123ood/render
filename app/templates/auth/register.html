@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}إنشاء حساب - نظام تسجيل دخول آمن{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="mb-0"><i class="bi bi-person-plus me-2"></i>إنشاء حساب جديد</h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label fw-medium") }}
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), aria_describedby="usernameHelp") }}
+                        <div id="usernameHelp" class="form-text">3-80 حرف، أحرف وأرقام فقط</div>
+                        {% for error in form.username.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label fw-medium") }}
+                        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                        {% for error in form.email.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label fw-medium") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), id="passwordInput") }}
+                        <div id="passwordStrength" class="form-text"></div>
+                        {% for error in form.password.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form.confirm_password.label(class="form-label fw-medium") }}
+                        {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else "")) }}
+                        {% for error in form.confirm_password.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-0">لديك حساب بالفعل؟ 
+                        <a href="{{ url_for('auth.login') }}" class="fw-medium">سجل دخول</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('passwordInput').addEventListener('input', function(e) {
+    const password = e.target.value;
+    const strengthDiv = document.getElementById('passwordStrength');
+    
+    if (password.length === 0) {
+        strengthDiv.textContent = '';
+        strengthDiv.className = 'form-text';
+        return;
+    }
+    
+    let score = 0;
+    if (password.length >= 12) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password)) score++;
+    
+    const labels = ['ضعيفة جداً', 'ضعيفة', 'متوسطة', 'قوية', 'قوية جداً'];
+    const colors = ['text-danger', 'text-warning', 'text-info', 'text-success', 'text-success'];
+    
+    strengthDiv.textContent = `قوة كلمة المرور: ${labels[Math.min(score, 4)]}`;
+    strengthDiv.className = `form-text ${colors[Math.min(score, 4)]} fw-medium`;
+});
+</script>
+{% endblock %}
