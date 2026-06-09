@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
@@ -19,7 +20,9 @@ login_manager.login_message = 'يرجى تسجيل الدخول للوصول إ�
 login_manager.login_message_category = 'info'
 
 
-def create_app(config_name='default'):
+def create_app(config_name=None):
+    if config_name is None:
+        config_name = os.environ.get('FLASK_CONFIG', 'production')
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     
@@ -44,3 +47,7 @@ def create_app(config_name='default'):
 def load_user(user_id):
     from app.models import User
     return User.query.get(int(user_id))
+
+
+config_name = os.environ.get('FLASK_CONFIG', 'production')
+app = create_app(config_name)
