@@ -50,3 +50,6 @@ def create_app(config_name=None):
 def load_user(user_id):
     from app.models import User
     return User.query.get(int(user_id))
+
+
+app = create_app()
