@@ -42,6 +42,21 @@ def create_app(config_name=None):
     
     with app.app_context():
         db.create_all()
+        
+        from app.models import User
+        from app.auth.security import hash_password
+        admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'Admin@12345678')
+        if not User.query.filter_by(username=admin_username).first():
+            admin = User(
+                username=admin_username,
+                email=admin_email,
+                password_hash=hash_password(admin_password),
+                is_admin=True
+            )
+            db.session.add(admin)
+            db.session.commit()
     
     return app
 
