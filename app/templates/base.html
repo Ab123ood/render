@@ -17,6 +17,11 @@
             </a>
             <div class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                            <i class="bi bi-speedometer2 me-1"></i>لوحة المشرف
+                        </a>
+                    {% endif %}
                     <span class="nav-link text-light">
                         <i class="bi bi-person-circle me-1"></i>{{ current_user.username }}
                     </span>

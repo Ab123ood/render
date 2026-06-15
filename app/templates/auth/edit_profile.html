@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}تعديل الملف الشخصي - نظام تسجيل دخول آمن{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>تعديل الملف الشخصي</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">{{ form.username.label.text }}</label>
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder=form.username.render_kw.placeholder) }}
+                        {% for error in form.username.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{{ form.email.label.text }}</label>
+                        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder=form.email.render_kw.placeholder) }}
+                        {% for error in form.email.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">{{ form.current_password.label.text }}</label>
+                        {{ form.current_password(class="form-control" + (" is-invalid" if form.current_password.errors else ""), placeholder=form.current_password.render_kw.placeholder, autocomplete="current-password") }}
+                        {% for error in form.current_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                        <div class="form-text">مطلوبة لتثبيت التعديلات.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">{{ form.new_password.label.text }}</label>
+                        {{ form.new_password(class="form-control" + (" is-invalid" if form.new_password.errors else ""), placeholder=form.new_password.render_kw.placeholder, autocomplete="new-password") }}
+                        {% for error in form.new_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                        <div class="form-text">اتركه فارغًا إذا لا تريد تغيير كلمة المرور.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirm_new_password" class="form-label">{{ form.confirm_new_password.label.text }}</label>
+                        {{ form.confirm_new_password(class="form-control" + (" is-invalid" if form.confirm_new_password.errors else ""), placeholder=form.confirm_new_password.render_kw.placeholder, autocomplete="new-password") }}
+                        {% for error in form.confirm_new_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                        <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-secondary">إلغاء</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

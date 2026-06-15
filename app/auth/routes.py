@@ -1,8 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask import render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
 from app.auth import bp
-from app.auth.forms import RegisterForm, LoginForm
+from app.auth.forms import RegisterForm, LoginForm, EditProfileForm
 from app.auth.security import hash_password, verify_password
 from app.models import User
 from app import db, limiter
@@ -52,8 +52,8 @@ def login():
             flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'error')
             return render_template('auth/login.html', form=form)
         
-        if user.locked_until and user.locked_until > datetime.utcnow():
-            remaining = (user.locked_until - datetime.utcnow()).seconds // 60
+        if user.locked_until and user.locked_until > datetime.now(timezone.utc):
+            remaining = (user.locked_until - datetime.now(timezone.utc)).seconds // 60
             flash(f'الحساب مقفل مؤقتًا. حاول مرة أخرى بعد {remaining} دقيقة.', 'error')
             return render_template('auth/login.html', form=form)
         
@@ -61,7 +61,7 @@ def login():
             user.failed_login_attempts += 1
             
             if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
-                user.locked_until = datetime.utcnow() + LOCKOUT_DURATION
+                user.locked_until = datetime.now(timezone.utc) + LOCKOUT_DURATION
                 flash(f'تم قفل الحساب بسبب محاولات فاشلة متكررة. حاول بعد {LOCKOUT_DURATION.seconds // 60} دقيقة.', 'error')
             else:
                 remaining = MAX_FAILED_ATTEMPTS - user.failed_login_attempts
@@ -72,7 +72,7 @@ def login():
         
         user.failed_login_attempts = 0
         user.locked_until = None
-        user.last_login = datetime.utcnow()
+        user.last_login = datetime.now(timezone.utc)
         db.session.commit()
         
         login_user(user, remember=form.remember_me.data == 'y')
@@ -98,3 +98,30 @@ def logout():
 @login_required
 def profile():
     return render_template('auth/profile.html', user=current_user)
+
+
+@bp.route('/profile/edit', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm(
+        original_username=current_user.username,
+        original_email=current_user.email,
+        obj=current_user
+    )
+    
+    if form.validate_on_submit():
+        if not verify_password(current_user.password_hash, form.current_password.data):
+            flash('كلمة المرور الحالية غير صحيحة.', 'error')
+            return render_template('auth/edit_profile.html', form=form)
+        
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        
+        if form.new_password.data:
+            current_user.password_hash = hash_password(form.new_password.data)
+        
+        db.session.commit()
+        flash('تم تعديل الملف الشخصي بنجاح.', 'success')
+        return redirect(url_for('auth.profile'))
+    
+    return render_template('auth/edit_profile.html', form=form)

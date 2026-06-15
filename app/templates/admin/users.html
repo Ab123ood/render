@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة المستخدمين - لوحة المشرف{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-people me-2"></i>إدارة المستخدمين</h2>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-right me-1"></i>العودة للوحة التحكم
+            </a>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                {% if users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>المستخدم</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>آخر دخول</th>
+                                    <th>الحالة</th>
+                                    <th>الدور</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td>
+                                            <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                                        </td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else '-' }}</td>
+                                        <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else 'لم يسجل بعد' }}</td>
+                                        <td>
+                                            {% if user.is_active %}
+                                                <span class="badge bg-success">نشط</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">محظور</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.is_admin %}
+                                                <span class="badge bg-warning">مشرف</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">مستخدم</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.id != current_user.id %}
+                                                <form action="{{ url_for('admin.toggle_user', user_id=user.id) }}" method="POST" class="d-inline">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                    {% if user.is_active %}
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning" title="حظر">
+                                                            <i class="bi bi-person-x"></i>
+                                                        </button>
+                                                    {% else %}
+                                                        <button type="submit" class="btn btn-sm btn-outline-success" title="تفعيل">
+                                                            <i class="bi bi-person-check"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </form>
+                                                
+                                                {% if not user.is_admin %}
+                                                    <form action="{{ url_for('admin.make_admin', user_id=user.id) }}" method="POST" class="d-inline">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                        <button type="submit" class="btn btn-sm btn-outline-info" title="ترقية لمشرف">
+                                                            <i class="bi bi-person-gear"></i>
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <form action="{{ url_for('admin.remove_admin', user_id=user.id) }}" method="POST" class="d-inline">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="إزالة الصلاحية">
+                                                            <i class="bi bi-person-dash"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                
+                                                <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" class="d-inline">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف" onclick="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="text-muted small">أنت</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center mb-0">لا يوجد مستخدمين.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
